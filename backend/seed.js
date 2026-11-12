@@ -7,10 +7,18 @@ async function main() {
   await prisma.pedido.deleteMany();
   await prisma.produto.deleteMany();
   await prisma.categoria.deleteMany();
+  await prisma.mesa.deleteMany(); // Nova linha: Limpa as mesas antigas
+
+  console.log("Criando mesas...");
+  await prisma.mesa.createMany({
+    data: [
+      { numero: 1, status: "LIVRE" },
+      { numero: 2, status: "LIVRE" },
+      { numero: 3, status: "LIVRE" },
+    ],
+  });
 
   console.log("Criando categorias e produtos...");
-
-  // Cria a categoria Lanches e já vincula os produtos nela
   await prisma.categoria.create({
     data: {
       nome: "Lanches",
@@ -23,7 +31,6 @@ async function main() {
     },
   });
 
-  // Cria a categoria Bebidas com seus produtos
   await prisma.categoria.create({
     data: {
       nome: "Bebidas",
@@ -36,7 +43,7 @@ async function main() {
     },
   });
 
-  console.log("✅ Dados de teste inseridos com sucesso!");
+  console.log("✅ Mesas e Produtos inseridos com sucesso!");
 }
 
 main()
