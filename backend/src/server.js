@@ -150,6 +150,20 @@ io.on("connection", (socket) => {
       io.emit("atualizacao_mesas_online", Array.from(mesasOnline));
     }
   });
+
+  // 4. ATUALIZAR ESTOQUE EM TEMPO REAL
+  socket.on("toggle_estoque", async ({ produtoId, disponivel }) => {
+    try {
+      await prisma.produto.update({
+        where: { id: produtoId },
+        data: { disponivel: disponivel },
+      });
+      // Emite um alerta para TODAS as mesas e balcões recarregarem o cardápio
+      io.emit("estoque_atualizado");
+    } catch (error) {
+      console.error("Erro ao atualizar estoque:", error);
+    }
+  });
 });
 
 const PORT = 3000;
